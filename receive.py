@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import os
 import requests
 import subprocess
 import sys
@@ -138,6 +139,22 @@ for line in output:
             except:
                 print(code)
                 raise
+        elif model in ["Acurite-606TX"]:
+            # {"time" : "2022-06-22 13:36:38", "model" : "Acurite-606TX", "id" : 231, "battery_ok" : 1, "temperature_C" : 25.300, "mic" : "CHECKSUM"}
+            temperature = code['temperature_C']
+            id = '{}{}'.format(606, code['id'])
+            battery = code['battery_ok']
+            try:
+               post_temperature_data(
+                    {
+                        'sensor_id': id, 'temperature': temperature,
+                        'battery': battery, 'source': 'raspberry'
+                    }
+                )  
+            except:
+                print(code)
+                raise
+
         else:
             log_unknown_entry(code)
 
